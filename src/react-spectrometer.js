@@ -6,7 +6,7 @@ export class Connector extends Component {
 
     this.state = {
       pathname: props.path,
-      initialData : null,
+      initialData: null,
     };
 
     this.changeLocation = this._changeLocation.bind(this);
@@ -62,7 +62,7 @@ export class Connector extends Component {
     }
 
     if (options.async) {
-      this.props.router.initialize(pathname, data).then((initialData) => {
+      this.props.router.initialize(pathname, data).then(initialData => {
         this._updatePage(pathname, initialData);
       });
     } else {

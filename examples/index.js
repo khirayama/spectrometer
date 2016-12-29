@@ -1,5 +1,4 @@
-import Router from '../lib';
-import {Connector} from '../lib/react';
+import {Router, Connector} from '../lib';
 
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
