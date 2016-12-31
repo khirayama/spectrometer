@@ -79,8 +79,8 @@ const routes = [{
   head: {title: 'Home'},
 }, {
   path: '/posts',
-  initialize: () => {
-    return new Promise((resolve, {message}) => {
+  initialize: (params, {message}) => {
+    return new Promise((resolve) => {
       Posts.fetch().then((posts) => {
         console.log(message);
         resolve(posts);
