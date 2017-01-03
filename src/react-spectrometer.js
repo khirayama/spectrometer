@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 export class Connector extends Component {
   constructor(props) {
@@ -78,9 +79,17 @@ export class Connector extends Component {
     const component = this.props.router.getComponent(pathname);
 
     if (this.props.router.getComponent(pathname)) {
-      return React.createElement(component, {
+      return React.createElement(ReactCSSTransitionGroup, {
+        transitionName: this.props.transitionName,
+        transitionAppear: this.props.transitionAppear,
+        transitionAppearTimeout: this.props.transitionAppearTimeout,
+        transitionEnterTimeout: this.props.transitionEnterTimeout,
+        transitionLeaveTimeout: this.props.transitionLeaveTimeout,
+      }, React.createElement(component, {
+        key: (new Date()).getTime(),
+        changeLocation: this.changeLocation,
         initialData: this.state.initialData,
-      });
+      }));
     }
     return null;
   }
