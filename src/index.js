@@ -1,4 +1,4 @@
 import Router from './router';
-import {Connector} from './react-spectrometer';
+import {Connector, Link} from './react-spectrometer';
 
-export {Router, Connector};
+export {Router, Connector, Link};

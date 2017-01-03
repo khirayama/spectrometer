@@ -22,6 +22,9 @@ export class Connector extends Component {
       this._updateLocation(pathname, true);
     });
   }
+  getChildContext() {
+    return {changeLocation: this.changeLocation};
+  }
   _updateHead(head) {
     if (head.title) {
       document.title = head.title;
@@ -76,13 +79,16 @@ export class Connector extends Component {
 
     if (this.props.router.getComponent(pathname)) {
       return React.createElement(component, {
-        changeLocation: this.changeLocation,
         initialData: this.state.initialData,
       });
     }
     return null;
   }
 }
+
+Connector.childContextTypes = {
+  changeLocation: PropTypes.func,
+};
 
 Connector.propTypes = {
   router: PropTypes.shape({
@@ -92,4 +98,30 @@ Connector.propTypes = {
     getOptions: PropTypes.func.isRequired,
   }),
   path: PropTypes.string.isRequired,
+};
+
+export class Link extends Component {
+  constructor() {
+    super();
+
+    this.handleClick = this._handleClick.bind(this);
+  }
+  _handleClick(event) {
+    event.preventDefault();
+
+    const pathname = this.props.href;
+
+    this.context.changeLocation(pathname);
+  }
+  render() {
+    return <a {...this.props} onClick={this.handleClick}>{this.props.children}</a>;
+  }
+}
+
+Link.contextTypes = {
+  changeLocation: PropTypes.func,
+};
+
+Link.propTypes = {
+  href: PropTypes.string.isRequired,
 };

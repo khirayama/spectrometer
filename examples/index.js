@@ -1,6 +1,6 @@
-import {Router, Connector} from '../lib';
+import {Router, Connector, Link} from '../lib';
 
-import React, {Component} from 'react';
+import React, {PropTypes, Component} from 'react';
 import ReactDOM from 'react-dom';
 
 const Posts = {
@@ -39,23 +39,34 @@ const Posts = {
   }
 };
 
-function HomePage(props) {
-  return (
-    <div>
-      <h1>Home</h1>
-      <div onClick={() => props.changeLocation('/posts')}>to posts (wait 300ms to get posts)</div>
-    </div>
-  );
+class HomePage extends Component {
+  render() {
+    // if don't use Link component
+    return (
+      <div>
+        <h1>Home</h1>
+        <div onClick={() => this.context.changeLocation('/posts')}>to posts (wait 300ms to get posts)</div>
+      </div>
+    );
+  }
 }
+HomePage.contextTypes = {
+  changeLocation: PropTypes.func,
+};
 
 function PostsPage(props) {
   const posts = props.initialData;
   return (
     <div>
       <h1>Posts</h1>
-      <div onClick={() => props.changeLocation('/')}>to top</div>
+      <Link className="link" href="/">to top</Link>
       <ul>{posts.map((post) => {
-        return <li key={post.id} onClick={() => props.changeLocation(`/posts/${post.id}`)}>{post.title} (wait 200ms to get post)</li>
+        return (
+          <li key={post.id}>
+            <Link href={`/posts/${post.id}`}>{post.title}</Link>
+            (wait 200ms to get post)
+          </li>
+        )
       })}</ul>
     </div>
   );
@@ -65,8 +76,8 @@ function PostPage(props) {
   const post = props.initialData;
   return (
     <div>
-      <div onClick={() => props.changeLocation('/')}>to top</div>
-      <div onClick={() => props.changeLocation('/posts')}>to posts</div>
+      <Link href="/">to top</Link>
+      <Link href="/posts">to posts</Link>
       <h1>{post.title}</h1>
       <p>{post.body}</p>
     </div>
