@@ -95,10 +95,10 @@ export class Connector extends Component {
     if (this.props.router.getComponent(pathname)) {
       return React.createElement(ReactCSSTransitionGroup, {
         transitionName: this.props.transitionName || '',
-        transitionAppear: this.props.transitionAppear || '',
-        transitionAppearTimeout: this.props.transitionAppearTimeout || '',
-        transitionEnterTimeout: this.props.transitionEnterTimeout || '',
-        transitionLeaveTimeout: this.props.transitionLeaveTimeout || '',
+        transitionAppear: this.props.transitionAppear || false,
+        transitionAppearTimeout: this.props.transitionAppearTimeout || 0,
+        transitionEnterTimeout: this.props.transitionEnterTimeout || 0,
+        transitionLeaveTimeout: this.props.transitionLeaveTimeout || 0,
       }, React.createElement(component, props));
     }
     return null;
