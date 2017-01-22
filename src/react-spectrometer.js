@@ -77,19 +77,29 @@ export class Connector extends Component {
   render() {
     const pathname = this.state.pathname;
     const component = this.props.router.getComponent(pathname);
+    const props = Object.assign({}, this.props, {
+      key: (new Date()).getTime(),
+      changeLocation: this.changeLocation,
+      initialData: this.state.initialData,
+    });
+
+    delete props.transitionName;
+    delete props.transitionAppear;
+    delete props.transitionAppearTimeout;
+    delete props.transitionEnterTimeout;
+    delete props.transitionLeaveTimeout;
+    delete props.transitionLeaveTimeout;
+    delete props.path;
+    delete props.router;
 
     if (this.props.router.getComponent(pathname)) {
       return React.createElement(ReactCSSTransitionGroup, {
-        transitionName: this.props.transitionName,
-        transitionAppear: this.props.transitionAppear,
-        transitionAppearTimeout: this.props.transitionAppearTimeout,
-        transitionEnterTimeout: this.props.transitionEnterTimeout,
-        transitionLeaveTimeout: this.props.transitionLeaveTimeout,
-      }, React.createElement(component, {
-        key: (new Date()).getTime(),
-        changeLocation: this.changeLocation,
-        initialData: this.state.initialData,
-      }));
+        transitionName: this.props.transitionName || '',
+        transitionAppear: this.props.transitionAppear || '',
+        transitionAppearTimeout: this.props.transitionAppearTimeout || '',
+        transitionEnterTimeout: this.props.transitionEnterTimeout || '',
+        transitionLeaveTimeout: this.props.transitionLeaveTimeout || '',
+      }, React.createElement(component, props));
     }
     return null;
   }
