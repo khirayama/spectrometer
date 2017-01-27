@@ -1,21 +1,24 @@
 import React, {Component, PropTypes} from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-function queryString(href) {
-  const href_ = href.split('?');
-  const pathname = href_[0];
-  const params = {};
+export function _parseQueryString(hrefString) {
+  const hrefAndHashArray = hrefString.split('#');
+  const hrefArray = hrefAndHashArray[0].split('?');
+  const pathname = hrefArray[0];
+  const query = {};
 
-  if (href_[1]) {
-    href_[1].split('&').forEach(query => {
-      const query_ = query.split('=');
-      params[query_[0]] = query_[1];
+  const queriesString = hrefArray[1] || null;
+
+  if (queriesString !== null) {
+    queriesString.split('&').forEach(queryString => {
+      const queryArray = queryString.split('=');
+      query[queryArray[0]] = queryArray[1];
     });
   }
 
   return {
     pathname,
-    params,
+    query,
   };
 }
 
@@ -49,34 +52,34 @@ export class Connector extends Component {
       document.title = head.title;
     }
   }
-  _updatePage(pathname, initialData = null) {
-    const query = queryString(pathname);
+  _updatePage(href, initialData = null) {
+    const {pathname, query} = _parseQueryString(href);
 
-    let head = this.props.router.getHead(query.pathname);
+    let head = this.props.router.getHead(pathname);
     if (typeof head === 'function') {
       head = head(initialData);
     }
     this._updateHead(head);
 
-    if (query.pathname === location.pathname) {
-      this.setState({pathname: query.pathname, initialData});
+    if (pathname === location.pathname) {
+      this.setState({pathname, initialData});
     }
   }
   _changeLocation(pathname) {
     this._updateLocation(pathname, false);
   }
-  _updateLocation(pathname, isPopstate) {
+  _updateLocation(href, isPopstate) {
     // options.async
     // options.data
-    const query = queryString(pathname);
-    const options = this.props.router.getOptions(query.pathname);
+    const {pathname, query} = _parseQueryString(href);
+    const options = this.props.router.getOptions(pathname);
     let data = null;
 
     if (typeof history === 'object') {
       if (isPopstate) {
-        history.replaceState(null, null, pathname);
+        history.replaceState(null, null, href);
       } else {
-        history.pushState(null, null, pathname);
+        history.pushState(null, null, href);
       }
     }
 
@@ -85,15 +88,15 @@ export class Connector extends Component {
     } else {
       data = options.data;
     }
-    data.params = query.params;
+    data.query = query;
 
     if (options.async) {
-      this.props.router.initialize(query.pathname, data).then(initialData => {
-        this._updatePage(pathname, initialData);
+      this.props.router.initialize(pathname, data).then(initialData => {
+        this._updatePage(href, initialData);
       });
     } else {
-      this.props.router.initialize(query.pathname, data);
-      this._updatePage(pathname);
+      this.props.router.initialize(pathname, data);
+      this._updatePage(href);
     }
   }
   render() {
