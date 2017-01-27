@@ -6,10 +6,12 @@ function queryString(href) {
   const pathname = href_[0];
   const params = {};
 
-  href_[1].split('&').forEach(query => {
-    const query_ = query.split('=');
-    params[query_[0]] = query_[1];
-  });
+  if (href_[1]) {
+    href_[1].split('&').forEach(query => {
+      const query_ = query.split('=');
+      params[query_[0]] = query_[1];
+    });
+  }
 
   return {
     pathname,
