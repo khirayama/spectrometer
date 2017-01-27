@@ -1,6 +1,22 @@
 import React, {Component, PropTypes} from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
+function queryString(href) {
+  const href_ = href.split('?');
+  const pathname = href_[0];
+  const params = {};
+
+  href_[1].split('&').forEach(query => {
+    const query_ = query.split('=');
+    params[query_[0]] = query_[1];
+  });
+
+  return {
+    pathname,
+    params,
+  };
+}
+
 export class Connector extends Component {
   constructor(props) {
     super(props);
@@ -32,14 +48,16 @@ export class Connector extends Component {
     }
   }
   _updatePage(pathname, initialData = null) {
-    let head = this.props.router.getHead(pathname);
+    const query = queryString(pathname);
+
+    let head = this.props.router.getHead(query.pathname);
     if (typeof head === 'function') {
       head = head(initialData);
     }
     this._updateHead(head);
 
-    if (pathname === location.pathname) {
-      this.setState({pathname, initialData});
+    if (query.pathname === location.pathname) {
+      this.setState({pathname: query.pathname, initialData});
     }
   }
   _changeLocation(pathname) {
@@ -48,7 +66,8 @@ export class Connector extends Component {
   _updateLocation(pathname, isPopstate) {
     // options.async
     // options.data
-    const options = this.props.router.getOptions(pathname);
+    const query = queryString(pathname);
+    const options = this.props.router.getOptions(query.pathname);
     let data = null;
 
     if (typeof history === 'object') {
@@ -64,13 +83,14 @@ export class Connector extends Component {
     } else {
       data = options.data;
     }
+    data.params = query.params;
 
     if (options.async) {
-      this.props.router.initialize(pathname, data).then(initialData => {
+      this.props.router.initialize(query.pathname, data).then(initialData => {
         this._updatePage(pathname, initialData);
       });
     } else {
-      this.props.router.initialize(pathname, data);
+      this.props.router.initialize(query.pathname, data);
       this._updatePage(pathname);
     }
   }
