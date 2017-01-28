@@ -102,6 +102,7 @@ export class Connector extends Component {
   render() {
     const pathname = this.state.pathname;
     const component = this.props.router.getComponent(pathname);
+    const className = this.props.router.getClassName(pathname);
     const props = Object.assign({}, this.props, {
       key: (new Date()).getTime(),
       changeLocation: this.changeLocation,
@@ -124,6 +125,7 @@ export class Connector extends Component {
         transitionAppearTimeout: this.props.transitionAppearTimeout || 0,
         transitionEnterTimeout: this.props.transitionEnterTimeout || 0,
         transitionLeaveTimeout: this.props.transitionLeaveTimeout || 0,
+        className,
       }, React.createElement(component, props));
     }
     return null;

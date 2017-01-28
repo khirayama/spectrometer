@@ -142,6 +142,14 @@ export default class Router {
     return null;
   }
 
+  getClassName(path) {
+    const {route, matches} = this._findRoute(path);
+    if (route.className && matches) {
+      return route.className;
+    }
+    return '';
+  }
+
   getOptions(path) {
     const {route, matches} = this._findRoute(path);
     if (route.options && matches) {
